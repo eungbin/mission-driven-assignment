@@ -21,9 +21,9 @@ export default function RootLayout({
         />
       </head>
       <body
-        className="antialiased bg-gray-100"
+        className="antialiased"
       >
-        <div className="bg-white mx-4 min-h-screen">
+        <div className="bg-white min-h-screen">
           <Header />
           {children}
         </div>
