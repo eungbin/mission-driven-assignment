@@ -2,6 +2,8 @@
 
 import TextArea from "./components/common/TextArea";
 import Label from "./components/common/Label";
+import ImageUploadIcon from "./components/common/ImageUploadIcon";
+import TimeInput from "./components/common/TimeInput";
 
 export default function Home() {
   return (
@@ -32,8 +34,8 @@ export default function Home() {
               <p className="text-gray-600 text-sm mb-3">
                 최대 4장까지 등록할 수 있어요
               </p>
-              <div className="bg-gray-100 border border-gray-300 rounded-lg aspect-square max-w-[180px] md:max-w-[300px] flex items-center justify-center">
-                <div className="text-gray-400 text-4xl">+</div>
+              <div className="bg-gray-100 border border-gray-300 rounded-lg aspect-square max-w-[180px] md:max-w-[250px] flex items-center justify-center">
+                <ImageUploadIcon />
               </div>
             </div>
           </div>
@@ -90,58 +92,30 @@ export default function Home() {
                 <p className="text-black font-bold text-md md:text-lg">회차 정보</p>
 
                 {/* 날짜 선택 */}
-                <div>
-                  <Label variant="sub">날짜 선택</Label>
+                <div className="flex items-center gap-4">
+                  <Label variant="sub" className="mb-0 w-20 flex-shrink-0">날짜 선택</Label>
                   <input
                     type="text"
                     placeholder="날짜를 선택해주세요"
-                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400"
+                    className="flex-1 px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400"
                   />
                 </div>
 
                 {/* 시작 시간 */}
-                <div>
-                  <Label variant="sub">시작 시간</Label>
-                  <div className="flex items-center gap-2">
-                    <select className="px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400">
-                      <option>오전</option>
-                      <option>오후</option>
-                    </select>
-                    <input
-                      type="text"
-                      value="10"
-                      className="w-16 px-3 py-3 bg-white border border-gray-300 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-gray-400"
-                    />
-                    <span className="text-gray-400">:</span>
-                    <input
-                      type="text"
-                      value="00"
-                      className="w-16 px-3 py-3 bg-white border border-gray-300 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-gray-400"
-                    />
-                  </div>
-                </div>
+                <TimeInput
+                  label="시작 시간"
+                  hour="10"
+                  minute="00"
+                  period="오전"
+                />
 
                 {/* 종료 시간 */}
-                <div>
-                  <Label variant="sub">종료 시간</Label>
-                  <div className="flex items-center gap-2">
-                    <select className="px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400">
-                      <option>오전</option>
-                      <option>오후</option>
-                    </select>
-                    <input
-                      type="text"
-                      value="11"
-                      className="w-16 px-3 py-3 bg-white border border-gray-300 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-gray-400"
-                    />
-                    <span className="text-gray-400">:</span>
-                    <input
-                      type="text"
-                      value="00"
-                      className="w-16 px-3 py-3 bg-white border border-gray-300 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-gray-400"
-                    />
-                  </div>
-                </div>
+                <TimeInput
+                  label="종료 시간"
+                  hour="11"
+                  minute="00"
+                  period="오전"
+                />
               </div>
 
               {/* 활동 내용 */}
