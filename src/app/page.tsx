@@ -1,3 +1,5 @@
+import TextArea from "./components/common/TextArea";
+
 export default function Home() {
   return (
     <main className="px-4 py-4 md:py-6 pb-4 md:pb-6">
@@ -61,16 +63,12 @@ export default function Home() {
               <label className="block text-black font-medium mb-2">
                 콘텐츠 제목
               </label>
-              <div className="relative">
-                <textarea
-                  placeholder="제목을 입력해주세요"
-                  rows={4}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 resize-none"
-                />
-                <div className="absolute bottom-3 right-3 text-gray-500 text-sm">
-                  0/80자(최소 8자)
-                </div>
-              </div>
+              <TextArea
+                placeholder="제목을 입력해주세요"
+                rows={4}
+                className=""
+                errorMessage="8자 이상 입력해주세요."
+              />
             </div>
 
             {/* 활동 방식 선택 */}
