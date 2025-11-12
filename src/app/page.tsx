@@ -4,6 +4,7 @@ import TextArea from "./components/common/TextArea";
 import Label from "./components/common/Label";
 import ImageUploadIcon from "./components/common/ImageUploadIcon";
 import TimeInput from "./components/common/TimeInput";
+import RepresentativeImageUpload from "./components/image/RepresentativeImageUpload";
 
 export default function Home() {
   return (
@@ -13,20 +14,7 @@ export default function Home() {
           {/* 왼쪽 컬럼 - 이미지 업로드 섹션 */}
           <div className="space-y-4 md:space-y-6">
             {/* 대표 이미지 */}
-            <div>
-              <Label>대표 이미지</Label>
-              <div className="bg-gray-100 border border-gray-300 rounded-lg p-6 md:p-8 flex flex-col items-center justify-center aspect-square">
-                <p className="text-black text-center mb-2">
-                  콘텐츠 대표 이미지를 등록해 주세요!
-                </p>
-                <p className="text-gray-500 text-sm text-center mb-6">
-                  1:1 비율의 정사각형 이미지를 추천합니다
-                </p>
-                <button className="bg-black text-white px-6 py-3 rounded-md text-sm font-medium hover:bg-gray-800 transition-colors">
-                  이미지 업로드
-                </button>
-              </div>
-            </div>
+            <RepresentativeImageUpload />
 
             {/* 추가 이미지 (선택) */}
             <div>
