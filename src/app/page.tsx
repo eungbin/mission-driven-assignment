@@ -2,9 +2,9 @@
 
 import TextArea from "./components/common/TextArea";
 import Label from "./components/common/Label";
-import ImageUploadIcon from "./components/common/ImageUploadIcon";
 import TimeInput from "./components/common/TimeInput";
 import RepresentativeImageUpload from "./components/image/RepresentativeImageUpload";
+import AdditionalImageUpload from "./components/image/AdditionalImageUpload";
 
 export default function Home() {
   return (
@@ -17,15 +17,7 @@ export default function Home() {
             <RepresentativeImageUpload />
 
             {/* 추가 이미지 (선택) */}
-            <div>
-              <Label>추가 이미지 (선택)</Label>
-              <p className="text-gray-600 text-sm mb-3">
-                최대 4장까지 등록할 수 있어요
-              </p>
-              <div className="bg-gray-100 border border-gray-300 rounded-lg aspect-square max-w-[180px] md:max-w-[250px] flex items-center justify-center">
-                <ImageUploadIcon />
-              </div>
-            </div>
+            <AdditionalImageUpload />
           </div>
 
           {/* 오른쪽 컬럼 - 폼 필드 섹션 */}
