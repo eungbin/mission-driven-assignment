@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import Label from "../common/Label";
+import { validateImageFile, readFileAsDataURL } from "../../utils/imageUtils";
 
 interface RepresentativeImageUploadProps {
   onFileChange?: (file: File | null) => void;
@@ -13,7 +14,6 @@ export default function RepresentativeImageUpload({
   maxSize = 15 * 1024 * 1024, // 15MB
 }: RepresentativeImageUploadProps) {
   const [previewImage, setPreviewImage] = useState<string | null>(null);  // 미리보기 이미지
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);    // 선택된 파일
   const [errorMessage, setErrorMessage] = useState<string | null>(null);  // 에러 메시지
   const fileInputRef = useRef<HTMLInputElement>(null);                    // 파일 입력 요소 참조 ref
 
@@ -29,42 +29,29 @@ export default function RepresentativeImageUpload({
    * 파일 선택 시 호출되는 핸들러 함수
    * 사용자가 이미지 파일을 선택하면 해당 파일을 처리하고 미리보기 이미지를 생성
    */
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // 용량 체크 (15MB 제한, 초과 시 에러 메시지 보여준 후 초기화)
-    if (file.size > maxSize) {
-      setErrorMessage("이미지 용량은 15MB를 초과할 수 없습니다.");
+    // 파일 유효성 검증
+    const validation = validateImageFile(file, maxSize);
+    if (!validation.isValid) {
+      setErrorMessage(validation.errorMessage);
       e.target.value = ""; // input 초기화
       return;
     }
 
-    // 이미지 파일 타입 체크 (.jpg(.jpeg)와 .png만 허용)
-    const allowedMimeTypes = ["image/jpeg", "image/png"];
-    const allowedExtensions = [".jpg", ".jpeg", ".png"];
-    const fileName = file.name.toLowerCase();
-    
-    const isValidMimeType = allowedMimeTypes.includes(file.type);
-    const hasValidExtension = allowedExtensions.some(ext => fileName.endsWith(ext));
-    
-    // 파일 타입 또는 확장자가 유효하지 않으면 에러 메시지 보여준 후 초기화
-    if (!isValidMimeType || !hasValidExtension) {
-      setErrorMessage("JPG 또는 PNG 파일만 업로드 가능합니다.");
-      e.target.value = "";
-      return;
-    }
-
     setErrorMessage(null);
-    setSelectedFile(file);
     onFileChange?.(file);
 
     // 미리보기 생성
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setPreviewImage(reader.result as string);
-    };
-    reader.readAsDataURL(file);
+    try {
+      const preview = await readFileAsDataURL(file);
+      setPreviewImage(preview);
+    } catch {
+      setErrorMessage("이미지 미리보기 생성 중 오류가 발생했습니다.");
+      e.target.value = "";
+    }
   };
 
 

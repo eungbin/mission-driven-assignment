@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import Label from "../common/Label";
 import ImageUploadIcon from "../common/ImageUploadIcon";
+import { validateImageFile, readFileAsDataURL } from "../../utils/imageUtils";
 
 interface ImageItem {
   id: string;
@@ -25,40 +26,16 @@ export default function AdditionalImageUpload({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const uploadInputRef = useRef<HTMLInputElement>(null);
 
-  /**
-   * 파일 유효성 검증 함수
-   */
-  const validateFile = (file: File): boolean => {
-    // 용량 체크
-    if (file.size > maxSize) {
-      setErrorMessage("이미지 용량은 15MB를 초과할 수 없습니다.");
-      return false;
-    }
-
-    // 이미지 파일 타입 체크 (.jpg(.jpeg)와 .png만 허용)
-    const allowedMimeTypes = ["image/jpeg", "image/png"];
-    const allowedExtensions = [".jpg", ".jpeg", ".png"];
-    const fileName = file.name.toLowerCase();
-
-    const isValidMimeType = allowedMimeTypes.includes(file.type);
-    const hasValidExtension = allowedExtensions.some((ext) =>
-      fileName.endsWith(ext)
-    );
-
-    if (!isValidMimeType || !hasValidExtension) {
-      setErrorMessage("JPG 또는 PNG 파일만 업로드 가능합니다.");
-      return false;
-    }
-
-    return true;
-  };
 
   /**
    * 이미지 추가 함수
    * 새 이미지를 배열 앞에 추가합니다 (뒤로 밀리는 구조).
    */
-  const addImage = (file: File, targetIndex?: number) => {
-    if (!validateFile(file)) {
+  const addImage = async (file: File, targetIndex?: number) => {
+    // 파일 유효성 검증
+    const validation = validateImageFile(file, maxSize);
+    if (!validation.isValid) {
+      setErrorMessage(validation.errorMessage);
       return;
     }
 
@@ -71,12 +48,12 @@ export default function AdditionalImageUpload({
     setErrorMessage(null);
 
     // 미리보기 생성
-    const reader = new FileReader();
-    reader.onloadend = () => {
+    try {
+      const preview = await readFileAsDataURL(file);
       const newImage: ImageItem = {
         id: `${Date.now()}-${Math.random()}`,
         file,
-        preview: reader.result as string,
+        preview,
       };
 
       setImages((prev) => {
@@ -97,8 +74,9 @@ export default function AdditionalImageUpload({
 
         return newImages;
       });
-    };
-    reader.readAsDataURL(file);
+    } catch {
+      setErrorMessage("이미지 미리보기 생성 중 오류가 발생했습니다.");
+    }
   };
 
   /**
