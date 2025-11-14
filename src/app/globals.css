@@ -3,3 +3,132 @@
 body {
   font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
 }
+
+/* 버튼 컴포넌트 스타일 */
+@layer utilities {
+  /* 기본 버튼 스타일 */
+  .btn-base {
+    @apply rounded-lg font-medium transition-colors cursor-pointer;
+    border: none;
+    outline: none;
+  }
+
+  .btn-base:disabled {
+    @apply opacity-50 cursor-not-allowed;
+  }
+
+  /* 버튼 크기(패딩 및 폰트 크기) */
+  .btn-large {
+    padding: 16px 20px;
+    @apply text-base;
+  }
+  .btn-medium {
+    padding: 12px 20px;
+    @apply text-base;
+  }
+  .btn-small {
+    padding: 8px 12px;
+    @apply text-sm;
+  }
+
+  /**
+  * 버튼 컴포넌트 색상별 [행,열] 위치 표시
+  * Figma 디자인 시안 참고
+  */
+
+  /* 버튼 컴포넌트 위치 [0,0] */
+  .btn-dark-gray {
+    background-color: #323232;
+    color: #ffffff;
+  }
+  .btn-dark-gray:hover:not(:disabled) {
+    background-color: #374151;
+  }
+
+  /* 버튼 컴포넌트 위치 [0,1] */
+  .btn-medium-gray {
+    background-color: #565656;
+    color: #ffffff;
+  }
+  .btn-medium-gray:hover:not(:disabled) {
+    background-color: #4b5563;
+  }
+
+  /* 버튼 컴포넌트 위치 [0,2] */
+  .btn-black {
+    background-color: #121212;
+    color: #ffffff;
+  }
+  .btn-black:hover:not(:disabled) {
+    background-color: #000000;
+  }
+
+  /* 버튼 컴포넌트 위치 [0,3] */
+  .btn-light-gray {
+    background-color: #D7D7D7;
+    color: #ffffff;
+  }
+  .btn-light-gray:hover:not(:disabled) {
+    background-color: #e5e7eb;
+  }
+
+  /* 버튼 컴포넌트 위치 [1,0] */
+  .btn-bright-green {
+    background-color: #03C124;
+    color: #ffffff;
+  }
+  .btn-bright-green:hover:not(:disabled) {
+    background-color: #059669;
+  }
+
+  /* 버튼 컴포넌트 위치 [1,1] */
+  .btn-medium-green {
+    background-color: #02891A;
+    color: #ffffff;
+  }
+  .btn-medium-green:hover:not(:disabled) {
+    background-color: #047857;
+  }
+
+  /* 버튼 컴포넌트 위치 [1,2] */
+  .btn-dark-green {
+    background-color: #026A14;
+    color: #ffffff;
+  }
+  .btn-dark-green:hover:not(:disabled) {
+    background-color: #065f46;
+  }
+
+  /* 버튼 컴포넌트 위치 [2,0] */
+  .btn-outline-white {
+    background-color: #F7F7F8;
+    color: #1a1a1a;
+    border: 1px solid #E5E5E5;
+  }
+  .btn-outline-white:hover:not(:disabled) {
+    background-color: #f9fafb;
+    border-color: #9ca3af;
+  }
+
+  /* 버튼 컴포넌트 위치 [2,1] */
+  .btn-outline-gray {
+    background-color: #E5E5E5;
+    color: #374151;
+    border: 1px solid #d1d5db;
+  }
+  .btn-outline-gray:hover:not(:disabled) {
+    background-color: #e5e7eb;
+    border-color: #BABABA;
+  }
+
+  /* 버튼 컴포넌트 위치 [2,2] */
+  .btn-outline-green {
+    background-color: #E6F9E9;
+    color: #10b981;
+    border: 1px solid #03C124;
+  }
+  .btn-outline-green:hover:not(:disabled) {
+    background-color: #f0fdf4;
+    border-color: #10b981;
+  }
+}

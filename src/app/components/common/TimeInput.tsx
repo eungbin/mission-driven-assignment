@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Button from "../common/Button";
 
 interface TimeInputProps {
   label: string;
@@ -49,13 +50,9 @@ export default function TimeInput({
         {label}
       </label>
       <div className="flex items-center border border-gray-300 rounded-lg bg-white overflow-hidden w-full">
-        <button
-          type="button"
-          onClick={handlePeriodToggle}
-          className="px-3 py-2 m-2 text-sm bg-gray-100 border-1 rounded-md border-gray-200 focus:outline-none hover:bg-gray-200 transition-colors"
-        >
+        <Button variant="outline-white" size="small" onClick={handlePeriodToggle} className="m-2">
           {currentPeriod}
-        </button>
+        </Button>
         <div className="flex items-center gap-2 px-4 flex-1 justify-center">
           <input
             type="text"
