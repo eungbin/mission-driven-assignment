@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import TextArea from "./components/common/TextArea";
 import Label from "./components/common/Label";
 import TimeInput from "./components/common/TimeInput";
@@ -7,6 +8,13 @@ import RepresentativeImageUpload from "./components/image/RepresentativeImageUpl
 import AdditionalImageUpload from "./components/image/AdditionalImageUpload";
 
 export default function Home() {
+  const router = useRouter();
+
+  // 카테고리 선택 페이지로 이동
+  const handleCategoryClick = () => {
+    router.push("/category");
+  };
+
   return (
     <main className="px-4 py-4 md:py-6 pb-24 md:pb-4">
       <div className="max-w-6xl mx-auto">
@@ -26,12 +34,15 @@ export default function Home() {
             <div>
               <Label htmlFor="category">카테고리</Label>
               <div className="relative">
-                <input
-                  type="text"
-                  placeholder="주제를 선택해주세요"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400"
-                />
-                <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+                <button
+                  type="button"
+                  id="category"
+                  onClick={handleCategoryClick}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-gray-400 text-left bg-white hover:bg-gray-50 transition-colors cursor-pointer"
+                >
+                  <span className="text-gray-500">주제를 선택해주세요</span>
+                </button>
+                <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none">
                   &gt;
                 </span>
               </div>
