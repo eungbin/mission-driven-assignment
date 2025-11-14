@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import TextArea from "./components/common/TextArea";
 import Label from "./components/common/Label";
 import TimeInput from "./components/common/TimeInput";
+import Button from "./components/common/Button";
 import RepresentativeImageUpload from "./components/image/RepresentativeImageUpload";
 import AdditionalImageUpload from "./components/image/AdditionalImageUpload";
 
@@ -66,12 +67,12 @@ export default function Home() {
                 만남을 어떤 방식으로 진행하시겠어요?
               </p>
               <div className="flex gap-3">
-                <button className="flex-1 bg-gray-400 text-white px-4 py-3 rounded-lg text-sm font-medium hover:bg-gray-500 transition-colors">
+                <Button variant="outline-white" size="large" fullWidth>
                   온라인
-                </button>
-                <button className="flex-1 bg-gray-200 text-gray-700 px-4 py-3 rounded-lg text-sm font-medium hover:bg-gray-300 transition-colors">
+                </Button>
+                <Button variant="outline-white" size="large" fullWidth>
                   직접 만나기
-                </button>
+                </Button>
               </div>
             </div>
 
@@ -130,9 +131,9 @@ export default function Home() {
 
             {/* 회차 추가하기 버튼 */}
             <div className="mt-4 md:mt-6">
-              <button className="w-full bg-gray-700 text-white px-6 py-3 md:py-4 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors">
+              <Button variant="dark-gray" size="large" fullWidth>
                 회차 추가하기
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -141,9 +142,9 @@ export default function Home() {
       {/* 모바일 하단 고정 버튼 */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 md:hidden z-40">
         <div className="max-w-6xl mx-auto px-4 py-4">
-          <button className="w-full bg-gray-400 text-white px-5 py-3 rounded text-sm font-medium hover:bg-gray-500 transition-colors">
+          <Button variant="medium-gray" size="medium" fullWidth>
             다음으로
-          </button>
+          </Button>
         </div>
       </div>
     </main>

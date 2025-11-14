@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import Label from "../common/Label";
 import { validateImageFile, readFileAsDataURL } from "../../utils/imageUtils";
+import Button from "../common/Button";
 
 interface RepresentativeImageUploadProps {
   onFileChange?: (file: File | null) => void;
@@ -86,12 +87,9 @@ export default function RepresentativeImageUpload({
             <p className="text-gray-500 text-sm text-center mb-6">
               1:1 비율의 정사각형 이미지를 추천합니다
             </p>
-            <button
-              type="button"
-              className="bg-black text-white px-6 py-3 rounded-md text-sm font-medium hover:bg-gray-800 transition-colors"
-            >
+            <Button variant="dark-gray" size="large">
               이미지 업로드
-            </button>
+            </Button>
           </>
         )}
       </div>
