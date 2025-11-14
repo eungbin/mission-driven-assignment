@@ -87,7 +87,7 @@ export default function RepresentativeImageUpload({
             <p className="text-gray-500 text-sm text-center mb-6">
               1:1 비율의 정사각형 이미지를 추천합니다
             </p>
-            <Button variant="black" size="large">
+            <Button variant="dark-gray" size="large">
               이미지 업로드
             </Button>
           </>
