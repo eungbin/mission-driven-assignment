@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
 import TextArea from "./components/common/TextArea";
 import Label from "./components/common/Label";
 import TimeInput from "./components/common/TimeInput";
@@ -12,7 +11,9 @@ import { useCategoryStore } from "./store/categoryStore";
 import { useFormStore } from "./store/formStore";
 import { useModalStore } from "./store/modalStore";
 import { useDatePickerStore } from "./store/datePickerStore";
+import { useToastStore } from "./store/toastStore";
 import { formatDateForDisplay } from "./utils/dateUtils";
+import { compareTimes, getEndTimeFromStartTime } from "./utils/timeUtils";
 import DatePicker from "./components/common/DatePicker";
 import Image from "next/image";
 
@@ -35,6 +36,7 @@ export default function Home() {
   } = useFormStore();
   const { openModal } = useModalStore();
   const { openPicker } = useDatePickerStore();
+  const { showToast } = useToastStore();
 
   const handleDeleteSession = (sessionId: string) => {
     openModal(
@@ -42,6 +44,44 @@ export default function Home() {
       "삭제한 내용은 복구할 수 없습니다.",
       () => removeSession(sessionId)
     );
+  };
+
+  // 시작 시간 변경 핸들러 (입력마다 종료 시간 자동 업데이트)
+  const handleStartTimeChange = (sessionId: string, newStartTime: { hour: string; minute: string; period: "오전" | "오후" }) => {
+    // 오전 12시는 오전 00시로 변환, 오후 00시는 오후 12시로 변환
+    let correctedStartTime = { ...newStartTime };
+    if (newStartTime.period === "오전" && newStartTime.hour === "12") {
+      correctedStartTime = { ...newStartTime, hour: "00" };
+    } else if (newStartTime.period === "오후" && newStartTime.hour === "00") {
+      correctedStartTime = { ...newStartTime, hour: "12" };
+    }
+    
+    // 시작 시간 업데이트
+    updateSession(sessionId, { startTime: correctedStartTime });
+    
+    // 종료 시간을 시작 시간 + 1시간으로 자동 업데이트
+    // 단, 시작 시간이 오후 11시 이상이면 오후 11:59로 고정
+    const newEndTime = getEndTimeFromStartTime(correctedStartTime);
+    updateSession(sessionId, { endTime: newEndTime });
+  };
+
+  // 종료 시간 변경 핸들러 (입력 중에는 검증하지 않음)
+  const handleEndTimeChange = (sessionId: string, newEndTime: { hour: string; minute: string; period: "오전" | "오후" }) => {
+    // 입력 중에는 검증 없이 그냥 업데이트
+    updateSession(sessionId, { endTime: newEndTime });
+  };
+
+  // 종료 시간 blur 핸들러 (focus가 사라질 때 검증)
+  const handleEndTimeBlur = (sessionId: string, newEndTime: { hour: string; minute: string; period: "오전" | "오후" }, startTime: { hour: string; minute: string; period: "오전" | "오후" }) => {
+    // 종료 시간이 시작 시간보다 이르면
+    if (!compareTimes(startTime, newEndTime)) {
+      // 토스트 메시지 표시
+      showToast("종료 시간은 시작 시간보다 이를 수 없습니다.");
+      
+      // 종료 시간을 시작 시간 + 1시간으로 자동 수정
+      const correctedEndTime = getEndTimeFromStartTime(startTime);
+      updateSession(sessionId, { endTime: correctedEndTime });
+    }
   };
 
   // 카테고리 선택 페이지로 이동
@@ -177,14 +217,15 @@ export default function Home() {
                   <TimeInput
                     label="시작 시간"
                     value={session.startTime}
-                    onChange={(time) => updateSession(session.id, { startTime: time })}
+                    onChange={(time) => handleStartTimeChange(session.id, time)}
                   />
 
                   {/* 종료 시간 */}
                   <TimeInput
                     label="종료 시간"
                     value={session.endTime}
-                    onChange={(time) => updateSession(session.id, { endTime: time })}
+                    onChange={(time) => handleEndTimeChange(session.id, time)}
+                    onBlur={(time) => handleEndTimeBlur(session.id, time, session.startTime)}
                   />
 
                   {/* 활동 내용 */}
@@ -193,19 +234,17 @@ export default function Home() {
                     <p className="text-gray-500 text-sm mb-3">
                       날짜별 활동 내용을 간단히 적어주세요
                     </p>
-                    <div className="relative">
-                      <textarea
-                        value={session.content}
-                        onChange={(e) => updateSession(session.id, { content: e.target.value })}
-                        placeholder="활동 내용을 간단히 입력해주세요"
-                        rows={6}
-                        maxLength={800}
-                        className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 resize-none"
-                      />
-                      <div className="absolute bottom-3 right-3 text-gray-500 text-sm">
-                        {session.content.length}/800자(최소 8자)
-                      </div>
-                    </div>
+                    <TextArea
+                      value={session.content}
+                      onChange={(e) => updateSession(session.id, { content: e.target.value })}
+                      placeholder="활동 내용을 간단히 입력해주세요"
+                      rows={6}
+                      maxLength={800}
+                      minLength={8}
+                      errorMessage="8자 이상 입력해주세요."
+                      preventConsecutiveSpaces={false}
+                      preventConsecutiveNewlines={false}
+                    />
                   </div>
                 </div>
               ))}
