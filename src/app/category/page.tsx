@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import Button from "../components/common/Button";
 import { useCategoryStore } from "../store/categoryStore";
+import { useToastStore } from "../store/toastStore";
 
 const categories = [
   "용돈벌기",
@@ -17,6 +18,7 @@ const categories = [
 
 export default function CategoryPage() {
   const { tempSelectedCategories, setTempSelectedCategories, resetTempToSelected } = useCategoryStore();
+  const { showToast } = useToastStore();
 
   // 페이지 진입 시 최종 선택 상태로 임시 상태 초기화
   useEffect(() => {
@@ -24,15 +26,20 @@ export default function CategoryPage() {
   }, [resetTempToSelected]);
 
   const handleCategoryClick = (category: string) => {
-    setTempSelectedCategories(
-      tempSelectedCategories.includes(category)
-        ? // 이미 선택된 경우 제거
-          tempSelectedCategories.filter((c) => c !== category)
-        : // 최대 2개까지 선택 가능
-          tempSelectedCategories.length < 2
-          ? [...tempSelectedCategories, category]
-          : tempSelectedCategories
-    );
+    if (tempSelectedCategories.includes(category)) {
+      // 이미 선택된 경우 제거
+      setTempSelectedCategories(
+        tempSelectedCategories.filter((c) => c !== category)
+      );
+    } else {
+      // 최대 2개까지 선택 가능
+      if (tempSelectedCategories.length < 2) {
+        setTempSelectedCategories([...tempSelectedCategories, category]);
+      } else {
+        // 2개를 이미 선택한 상태에서 추가 클릭 시 토스트 표시
+        showToast("최대 2개까지만 선택 가능해요");
+      }
+    }
   };
 
   return (

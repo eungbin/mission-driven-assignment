@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "./components/header/Header";
 import MobileBottomButton from "./components/common/MobileBottomButton";
+import Toast from "./components/common/Toast";
 
 export const metadata: Metadata = {
   title: "Mission Driven Assignment",
@@ -28,6 +29,7 @@ export default function RootLayout({
           <Header />
           {children}
           <MobileBottomButton />
+          <Toast />
         </div>
       </body>
     </html>
