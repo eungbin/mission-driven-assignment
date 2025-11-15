@@ -91,9 +91,9 @@ export default function RepresentativeImageUpload({
           </>
         ) : (
           <>
-            <p className="text-center mb-2">
+            <Label>
               콘텐츠 대표 이미지를 등록해 주세요!
-            </p>
+            </Label>
             <p className="text-gray-500 text-sm text-center mb-6">
               1:1 비율의 정사각형 이미지를 추천합니다
             </p>

@@ -177,7 +177,7 @@ export default function Home() {
               <div className="flex gap-3">
                 <Button
                   variant={activityType === "online" ? "outline-green" : "outline-white"}
-                  size="large"
+                  size="medium"
                   fullWidth
                   onClick={() => setActivityType("online")}
                 >
@@ -185,7 +185,7 @@ export default function Home() {
                 </Button>
                 <Button
                   variant={activityType === "offline" ? "outline-green" : "outline-white"}
-                  size="large"
+                  size="medium"
                   fullWidth
                   onClick={() => setActivityType("offline")}
                 >
@@ -271,7 +271,7 @@ export default function Home() {
 
             {/* 회차 추가하기 버튼 */}
             <div className="mt-4 md:mt-6">
-              <Button variant="dark-gray" size="large" fullWidth onClick={addSession}>
+              <Button variant="dark-gray" size="medium" fullWidth onClick={addSession}>
                 회차 추가하기
               </Button>
             </div>
