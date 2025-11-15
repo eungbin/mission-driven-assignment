@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useRef } from "react";
 import TextArea from "./components/common/TextArea";
 import Label from "./components/common/Label";
 import TimeInput from "./components/common/TimeInput";
@@ -10,6 +11,9 @@ import AdditionalImageUpload from "./components/image/AdditionalImageUpload";
 import { useCategoryStore } from "./store/categoryStore";
 import { useFormStore } from "./store/formStore";
 import { useModalStore } from "./store/modalStore";
+import { useDatePickerStore } from "./store/datePickerStore";
+import { formatDateForDisplay } from "./utils/dateUtils";
+import DatePicker from "./components/common/DatePicker";
 import Image from "next/image";
 
 export default function Home() {
@@ -30,6 +34,7 @@ export default function Home() {
     updateSession,
   } = useFormStore();
   const { openModal } = useModalStore();
+  const { openPicker } = useDatePickerStore();
 
   const handleDeleteSession = (sessionId: string) => {
     openModal(
@@ -76,7 +81,7 @@ export default function Home() {
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-gray-400 text-left bg-white hover:bg-gray-50 transition-colors cursor-pointer"
                 >
                   {selectedCategories.length > 0 ? (
-                    <span className="text-black">
+                    <span>
                       {selectedCategories.join(", ")}
                     </span>
                   ) : (
@@ -137,7 +142,7 @@ export default function Home() {
               {sessions.map((session, index) => (
                 <div key={session.id} className="p-4 md:p-6 bg-gray-50 rounded-lg space-y-4">
                   <div className="flex items-center justify-between">
-                    <p className="text-black font-bold text-md md:text-lg">
+                    <p className="font-bold text-md md:text-lg">
                       {sessions.length === 1 ? "회차 정보" : `${index + 1}회차 정보`}
                     </p>
                     {sessions.length > 1 && (
@@ -152,15 +157,20 @@ export default function Home() {
                   </div>
 
                   {/* 날짜 선택 */}
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-4 relative">
                     <Label variant="sub" className="mb-0 w-20 flex-shrink-0">날짜 선택</Label>
-                    <input
-                      type="text"
-                      value={session.date}
-                      onChange={(e) => updateSession(session.id, { date: e.target.value })}
-                      placeholder="날짜를 선택해주세요"
-                      className="flex-1 px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400"
-                    />
+                    <div className="flex-1 relative">
+                      <input
+                        type="text"
+                        data-session-id={session.id}
+                        value={session.date ? formatDateForDisplay(session.date) : ""}
+                        readOnly
+                        onClick={() => { openPicker(session.id); }}
+                        placeholder="날짜를 선택해주세요"
+                        className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 cursor-pointer text-center"
+                      />
+                      <DatePicker sessionId={session.id} />
+                    </div>
                   </div>
 
                   {/* 시작 시간 */}
@@ -179,7 +189,7 @@ export default function Home() {
 
                   {/* 활동 내용 */}
                   <div>
-                    <p className="text-black font-bold text-md md:text-lg">활동 내용</p>
+                    <p className="font-bold text-md md:text-lg">활동 내용</p>
                     <p className="text-gray-500 text-sm mb-3">
                       날짜별 활동 내용을 간단히 적어주세요
                     </p>

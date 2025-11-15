@@ -47,7 +47,7 @@ export default function CategoryPage() {
       <div className="max-w-6xl mx-auto">
         {/* 제목 및 부제목 */}
         <div className="mb-6 md:mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold text-black mb-2">
+          <h1 className="text-2xl md:text-3xl font-bold mb-2">
             어떤 카테고리의 콘텐츠를 만드시나요?
           </h1>
           <p className="text-gray-600 text-sm md:text-base">

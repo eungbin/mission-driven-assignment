@@ -44,7 +44,7 @@ export default function ConfirmModal() {
           {/* 모달 내용 */}
           <div className="px-6 pb-6">
             <div className="flex flex-col items-center justify-center">
-              <h2 className="text-black font-bold text-lg md:text-xl mb-2">
+              <h2 className="font-bold text-lg md:text-xl mb-2">
                 {title}
               </h2>
               <p className="text-gray-600 text-sm md:text-base mb-6">

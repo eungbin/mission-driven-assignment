@@ -91,7 +91,7 @@ export default function RepresentativeImageUpload({
           </>
         ) : (
           <>
-            <p className="text-black text-center mb-2">
+            <p className="text-center mb-2">
               콘텐츠 대표 이미지를 등록해 주세요!
             </p>
             <p className="text-gray-500 text-sm text-center mb-6">

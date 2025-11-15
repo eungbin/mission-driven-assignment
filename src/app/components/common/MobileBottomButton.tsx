@@ -47,7 +47,7 @@ export default function MobileBottomButton() {
   const variant = isEnabled ? "bright-green" : "light-gray";
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 md:hidden z-40">
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 md:hidden z-999">
       <div className="max-w-6xl mx-auto px-4 py-4">
         <Button
           variant={variant}
