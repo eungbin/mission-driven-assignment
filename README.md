@@ -134,6 +134,6 @@ mission-driven-assignment/
 
 ## 추가 정보
 
-이 프로젝트는 Next.js의 App Router를 사용하며, TypeScript와 Tailwind CSS로 구성되어 있습니다.
-site url: https://mission-driven-assignment.vercel.app/
+이 프로젝트는 Next.js의 App Router를 사용하며, TypeScript와 Tailwind CSS로 구성되어 있습니다.  
+https://mission-driven-assignment.vercel.app/
 
