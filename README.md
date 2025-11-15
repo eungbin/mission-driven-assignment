@@ -87,13 +87,49 @@ npm run start
 ```
 mission-driven-assignment/
 ├── src/
-│   └── app/          # Next.js App Router
-│       ├── page.tsx  # 메인 페이지
-│       ├── layout.tsx # 루트 레이아웃
-│       └── globals.css # 전역 스타일
-├── public/           # 정적 파일
-├── package.json      # 프로젝트 의존성
-└── tsconfig.json     # TypeScript 설정
+│   └── app/                    # Next.js App Router
+│       ├── page.tsx            # 메인 페이지
+│       ├── layout.tsx          # 루트 레이아웃
+│       ├── globals.css         # 전역 스타일
+│       ├── favicon.ico         # 파비콘
+│       ├── category/           # 카테고리 선택 페이지
+│       │   └── page.tsx
+│       ├── components/         # 컴포넌트
+│       │   ├── common/         # 공통 컴포넌트
+│       │   │   ├── Button.tsx
+│       │   │   ├── ConfirmModal.tsx
+│       │   │   ├── DatePicker.tsx
+│       │   │   ├── ImageUploadIcon.tsx
+│       │   │   ├── Label.tsx
+│       │   │   ├── MobileBottomButton.tsx
+│       │   │   ├── TextArea.tsx
+│       │   │   ├── TimeInput.tsx
+│       │   │   └── Toast.tsx
+│       │   ├── header/         # 헤더 컴포넌트
+│       │   │   └── Header.tsx
+│       │   └── image/          # 이미지 업로드 컴포넌트
+│       │       ├── AdditionalImageUpload.tsx
+│       │       └── RepresentativeImageUpload.tsx
+│       ├── store/              # 상태 관리 (Zustand)
+│       │   ├── categoryStore.ts
+│       │   ├── datePickerStore.ts
+│       │   ├── formStore.ts
+│       │   ├── modalStore.ts
+│       │   └── toastStore.ts
+│       └── utils/              # 유틸리티 함수
+│           ├── dateUtils.ts
+│           ├── imageUtils.ts
+│           └── timeUtils.ts
+├── public/                     # 정적 파일
+│   └── icons/                  # 아이콘 파일
+│       ├── chevron-left.svg
+│       ├── chevron-right.svg
+│       └── x.svg
+├── package.json                # 프로젝트 의존성
+├── tsconfig.json               # TypeScript 설정
+├── next.config.ts              # Next.js 설정
+├── eslint.config.mjs           # ESLint 설정
+└── postcss.config.mjs          # PostCSS 설정
 ```
 
 ## 추가 정보
