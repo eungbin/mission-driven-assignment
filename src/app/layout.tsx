@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Header from "./components/header/Header";
+import MobileBottomButton from "./components/common/MobileBottomButton";
 
 export const metadata: Metadata = {
   title: "Mission Driven Assignment",
@@ -26,6 +27,7 @@ export default function RootLayout({
         <div className="bg-white min-h-screen">
           <Header />
           {children}
+          <MobileBottomButton />
         </div>
       </body>
     </html>

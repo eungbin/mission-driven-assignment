@@ -19,7 +19,7 @@ export default function Home() {
   };
 
   return (
-    <main className="px-4 py-4 md:py-6 pb-24 md:pb-4">
+    <main className="px-4 py-4 md:py-6 pb-24 md:pb-6">
       <div className="max-w-6xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* 왼쪽 컬럼 - 이미지 업로드 섹션 */}
@@ -144,15 +144,6 @@ export default function Home() {
               </Button>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* 모바일 하단 고정 버튼 */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 md:hidden z-40">
-        <div className="max-w-6xl mx-auto px-4 py-4">
-          <Button variant="medium-gray" size="medium" fullWidth>
-            다음으로
-          </Button>
         </div>
       </div>
     </main>

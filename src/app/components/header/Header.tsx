@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
+import Image from "next/image";
 import Button from "../common/Button";
 import { useCategoryStore } from "../../store/categoryStore";
 
@@ -51,14 +52,25 @@ export default function Header() {
           
           {/* 왼쪽: 카테고리 페이지에서만 나가기 버튼 표시 */}
           {isCategoryPage && (
-            <Button
-              variant="outline-white"
-              size="small"
-              onClick={handleGoBack}
-              className="hidden md:block w-30"
-            >
-              나가기
-            </Button>
+            <>
+              {/* 모바일: X 아이콘 */}
+              <button
+                onClick={handleGoBack}
+                className="md:hidden hover:opacity-70 transition-opacity cursor-pointer flex items-center justify-center"
+                aria-label="나가기"
+              >
+                <Image src="/icons/x.svg" alt="나가기" width={28} height={28} />
+              </button>
+              {/* 데스크톱: 나가기 버튼 */}
+              <Button
+                variant="outline-white"
+                size="small"
+                onClick={handleGoBack}
+                className="hidden md:block w-30"
+              >
+                나가기
+              </Button>
+            </>
           )}
           
           {/* 오른쪽: 다음으로 버튼 */}

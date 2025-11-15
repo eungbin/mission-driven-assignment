@@ -36,7 +36,7 @@ export default function CategoryPage() {
   };
 
   return (
-    <main className="px-4 py-4 md:py-6">
+    <main className="px-4 py-4 md:py-6 pb-24 md:pb-6">
       <div className="max-w-6xl mx-auto">
         {/* 제목 및 부제목 */}
         <div className="mb-6 md:mb-8">
