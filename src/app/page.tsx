@@ -9,6 +9,7 @@ import RepresentativeImageUpload from "./components/image/RepresentativeImageUpl
 import AdditionalImageUpload from "./components/image/AdditionalImageUpload";
 import { useCategoryStore } from "./store/categoryStore";
 import { useFormStore } from "./store/formStore";
+import { useModalStore } from "./store/modalStore";
 import Image from "next/image";
 
 export default function Home() {
@@ -28,6 +29,15 @@ export default function Home() {
     removeSession,
     updateSession,
   } = useFormStore();
+  const { openModal } = useModalStore();
+
+  const handleDeleteSession = (sessionId: string) => {
+    openModal(
+      "작성된 내용을 삭제하시겠어요?",
+      "삭제한 내용은 복구할 수 없습니다.",
+      () => removeSession(sessionId)
+    );
+  };
 
   // 카테고리 선택 페이지로 이동
   const handleCategoryClick = () => {
@@ -132,7 +142,7 @@ export default function Home() {
                     </p>
                     {sessions.length > 1 && (
                       <button
-                        onClick={() => removeSession(session.id)}
+                        onClick={() => handleDeleteSession(session.id)}
                         className="hover:opacity-70 transition-opacity cursor-pointer flex items-center justify-center"
                         aria-label="회차 삭제"
                       >
