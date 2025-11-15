@@ -1,15 +1,25 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import TextArea from "./components/common/TextArea";
 import Label from "./components/common/Label";
 import TimeInput from "./components/common/TimeInput";
 import Button from "./components/common/Button";
 import RepresentativeImageUpload from "./components/image/RepresentativeImageUpload";
 import AdditionalImageUpload from "./components/image/AdditionalImageUpload";
+import { useCategoryStore } from "./store/categoryStore";
 
 export default function Home() {
+  const router = useRouter();
+  const { selectedCategories } = useCategoryStore();
+
+  // 카테고리 선택 페이지로 이동
+  const handleCategoryClick = () => {
+    router.push("/category");
+  };
+
   return (
-    <main className="px-4 py-4 md:py-6 pb-24 md:pb-4">
+    <main className="px-4 py-4 md:py-6 pb-24 md:pb-6">
       <div className="max-w-6xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* 왼쪽 컬럼 - 이미지 업로드 섹션 */}
@@ -27,12 +37,21 @@ export default function Home() {
             <div>
               <Label htmlFor="category">카테고리</Label>
               <div className="relative">
-                <input
-                  type="text"
-                  placeholder="주제를 선택해주세요"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400"
-                />
-                <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+                <button
+                  type="button"
+                  id="category"
+                  onClick={handleCategoryClick}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-gray-400 text-left bg-white hover:bg-gray-50 transition-colors cursor-pointer"
+                >
+                  {selectedCategories.length > 0 ? (
+                    <span className="text-black">
+                      {selectedCategories.join(", ")}
+                    </span>
+                  ) : (
+                    <span className="text-gray-500">주제를 선택해주세요</span>
+                  )}
+                </button>
+                <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none">
                   &gt;
                 </span>
               </div>
@@ -125,15 +144,6 @@ export default function Home() {
               </Button>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* 모바일 하단 고정 버튼 */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 md:hidden z-40">
-        <div className="max-w-6xl mx-auto px-4 py-4">
-          <Button variant="medium-gray" size="medium" fullWidth>
-            다음으로
-          </Button>
         </div>
       </div>
     </main>
