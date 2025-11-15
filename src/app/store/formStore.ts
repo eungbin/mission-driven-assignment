@@ -29,21 +29,25 @@ interface FormStore {
   activityType: "online" | "offline" | null;
   setActivityType: (type: "online" | "offline" | null) => void;
 
-  // 날짜 선택
-  selectedDate: string;
-  setSelectedDate: (date: string) => void;
-
-  // 시작 시간
-  startTime: { hour: string; minute: string; period: "오전" | "오후" };
-  setStartTime: (time: { hour: string; minute: string; period: "오전" | "오후" }) => void;
-
-  // 종료 시간
-  endTime: { hour: string; minute: string; period: "오전" | "오후" };
-  setEndTime: (time: { hour: string; minute: string; period: "오전" | "오후" }) => void;
-
-  // 활동 내용
-  activityContent: string;
-  setActivityContent: (content: string) => void;
+  // 회차 정보
+  sessions: Array<{
+    id: string;
+    date: string;
+    startTime: { hour: string; minute: string; period: "오전" | "오후" };
+    endTime: { hour: string; minute: string; period: "오전" | "오후" };
+    content: string;
+  }>;
+  addSession: () => void;
+  removeSession: (id: string) => void;
+  updateSession: (
+    id: string,
+    data: {
+      date?: string;
+      startTime?: { hour: string; minute: string; period: "오전" | "오후" };
+      endTime?: { hour: string; minute: string; period: "오전" | "오후" };
+      content?: string;
+    }
+  ) => void;
 
   // 폼 초기화
   resetForm: () => void;
@@ -84,29 +88,39 @@ export const useFormStore = create<FormStore>((set) => ({
   activityType: null,
   setActivityType: (type) => set({ activityType: type }),
 
-  // 날짜 선택
-  selectedDate: "",
-  setSelectedDate: (date) => set({ selectedDate: date }),
-
-  // 시작 시간
-  startTime: {
-    hour: "10",
-    minute: "00",
-    period: "오전",
-  },
-  setStartTime: (time) => set({ startTime: time }),
-
-  // 종료 시간
-  endTime: {
-    hour: "11",
-    minute: "00",
-    period: "오전",
-  },
-  setEndTime: (time) => set({ endTime: time }),
-
-  // 활동 내용
-  activityContent: "",
-  setActivityContent: (content) => set({ activityContent: content }),
+  // 회차 정보
+  sessions: [
+    {
+      id: "session-1",
+      date: "",
+      startTime: { hour: "10", minute: "00", period: "오전" },
+      endTime: { hour: "11", minute: "00", period: "오전" },
+      content: "",
+    },
+  ],
+  addSession: () =>
+    set((state) => ({
+      sessions: [
+        ...state.sessions,
+        {
+          id: `session-${Date.now()}-${Math.random()}`,
+          date: "",
+          startTime: { hour: "10", minute: "00", period: "오전" },
+          endTime: { hour: "11", minute: "00", period: "오전" },
+          content: "",
+        },
+      ],
+    })),
+  removeSession: (id) =>
+    set((state) => ({
+      sessions: state.sessions.filter((session) => session.id !== id),
+    })),
+  updateSession: (id, data) =>
+    set((state) => ({
+      sessions: state.sessions.map((session) =>
+        session.id === id ? { ...session, ...data } : session
+      ),
+    })),
 
   // 폼 초기화
   resetForm: () =>
@@ -115,10 +129,15 @@ export const useFormStore = create<FormStore>((set) => ({
       additionalImages: [],
       contentTitle: "",
       activityType: null,
-      selectedDate: "",
-      startTime: { hour: "10", minute: "00", period: "오전" },
-      endTime: { hour: "11", minute: "00", period: "오전" },
-      activityContent: "",
+      sessions: [
+        {
+          id: "session-1",
+          date: "",
+          startTime: { hour: "10", minute: "00", period: "오전" },
+          endTime: { hour: "11", minute: "00", period: "오전" },
+          content: "",
+        },
+      ],
     }),
 }));
 

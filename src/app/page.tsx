@@ -9,6 +9,7 @@ import RepresentativeImageUpload from "./components/image/RepresentativeImageUpl
 import AdditionalImageUpload from "./components/image/AdditionalImageUpload";
 import { useCategoryStore } from "./store/categoryStore";
 import { useFormStore } from "./store/formStore";
+import Image from "next/image";
 
 export default function Home() {
   const router = useRouter();
@@ -22,14 +23,10 @@ export default function Home() {
     setContentTitle,
     activityType,
     setActivityType,
-    selectedDate,
-    setSelectedDate,
-    startTime,
-    setStartTime,
-    endTime,
-    setEndTime,
-    activityContent,
-    setActivityContent,
+    sessions,
+    addSession,
+    removeSession,
+    updateSession,
   } = useFormStore();
 
   // 카테고리 선택 페이지로 이동
@@ -125,63 +122,78 @@ export default function Home() {
 
             {/* 상세 정보 */}
             <Label className="mb-0">상세 정보</Label>
-            <div className="bg-gray-50 rounded-lg p-4 md:p-6 space-y-4 md:space-y-6">
-              {/* 회차 정보 */}
-              <div className="space-y-4">
-                <p className="text-black font-bold text-md md:text-lg">회차 정보</p>
+            <div className="space-y-4 md:space-y-6">
+              {/* 회차 정보들 */}
+              {sessions.map((session, index) => (
+                <div key={session.id} className="p-4 md:p-6 bg-gray-50 rounded-lg space-y-4">
+                  <div className="flex items-center justify-between">
+                    <p className="text-black font-bold text-md md:text-lg">
+                      {sessions.length === 1 ? "회차 정보" : `${index + 1}회차 정보`}
+                    </p>
+                    {sessions.length > 1 && (
+                      <button
+                        onClick={() => removeSession(session.id)}
+                        className="hover:opacity-70 transition-opacity cursor-pointer flex items-center justify-center"
+                        aria-label="회차 삭제"
+                      >
+                        <Image src="/icons/x.svg" alt="삭제" width={28} height={28} />
+                      </button>
+                    )}
+                  </div>
 
-                {/* 날짜 선택 */}
-                <div className="flex items-center gap-4">
-                  <Label variant="sub" className="mb-0 w-20 flex-shrink-0">날짜 선택</Label>
-                  <input
-                    type="text"
-                    value={selectedDate}
-                    onChange={(e) => setSelectedDate(e.target.value)}
-                    placeholder="날짜를 선택해주세요"
-                    className="flex-1 px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400"
+                  {/* 날짜 선택 */}
+                  <div className="flex items-center gap-4">
+                    <Label variant="sub" className="mb-0 w-20 flex-shrink-0">날짜 선택</Label>
+                    <input
+                      type="text"
+                      value={session.date}
+                      onChange={(e) => updateSession(session.id, { date: e.target.value })}
+                      placeholder="날짜를 선택해주세요"
+                      className="flex-1 px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400"
+                    />
+                  </div>
+
+                  {/* 시작 시간 */}
+                  <TimeInput
+                    label="시작 시간"
+                    value={session.startTime}
+                    onChange={(time) => updateSession(session.id, { startTime: time })}
                   />
-                </div>
 
-                {/* 시작 시간 */}
-                <TimeInput
-                  label="시작 시간"
-                  value={startTime}
-                  onChange={setStartTime}
-                />
-
-                {/* 종료 시간 */}
-                <TimeInput
-                  label="종료 시간"
-                  value={endTime}
-                  onChange={setEndTime}
-                />
-              </div>
-
-              {/* 활동 내용 */}
-              <div>
-              <p className="text-black font-bold text-md md:text-lg">활동 내용</p>
-                <p className="text-gray-500 text-sm mb-3">
-                  날짜별 활동 내용을 간단히 적어주세요
-                </p>
-                <div className="relative">
-                  <textarea
-                    value={activityContent}
-                    onChange={(e) => setActivityContent(e.target.value)}
-                    placeholder="활동 내용을 간단히 입력해주세요"
-                    rows={6}
-                    maxLength={800}
-                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 resize-none"
+                  {/* 종료 시간 */}
+                  <TimeInput
+                    label="종료 시간"
+                    value={session.endTime}
+                    onChange={(time) => updateSession(session.id, { endTime: time })}
                   />
-                  <div className="absolute bottom-3 right-3 text-gray-500 text-sm">
-                    {activityContent.length}/800자(최소 8자)
+
+                  {/* 활동 내용 */}
+                  <div>
+                    <p className="text-black font-bold text-md md:text-lg">활동 내용</p>
+                    <p className="text-gray-500 text-sm mb-3">
+                      날짜별 활동 내용을 간단히 적어주세요
+                    </p>
+                    <div className="relative">
+                      <textarea
+                        value={session.content}
+                        onChange={(e) => updateSession(session.id, { content: e.target.value })}
+                        placeholder="활동 내용을 간단히 입력해주세요"
+                        rows={6}
+                        maxLength={800}
+                        className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 resize-none"
+                      />
+                      <div className="absolute bottom-3 right-3 text-gray-500 text-sm">
+                        {session.content.length}/800자(최소 8자)
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
+              ))}
             </div>
 
             {/* 회차 추가하기 버튼 */}
             <div className="mt-4 md:mt-6">
-              <Button variant="dark-gray" size="large" fullWidth>
+              <Button variant="dark-gray" size="large" fullWidth onClick={addSession}>
                 회차 추가하기
               </Button>
             </div>
