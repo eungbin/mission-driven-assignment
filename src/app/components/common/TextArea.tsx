@@ -13,6 +13,8 @@ interface TextAreaProps {
   errorMessage?: string;
   className?: string;
   disabled?: boolean;
+  preventConsecutiveSpaces?: boolean; // 연속 공백 방지
+  preventConsecutiveNewlines?: boolean; // 연속 개행문자 방지
 }
 
 export default function TextArea({
@@ -26,6 +28,8 @@ export default function TextArea({
   errorMessage,
   className = "",
   disabled = false,
+  preventConsecutiveSpaces = false,
+  preventConsecutiveNewlines = false,
 }: TextAreaProps) {
   const [isFocused, setIsFocused] = useState(false);
   const [internalValue, setInternalValue] = useState(defaultValue || "");
@@ -53,7 +57,33 @@ export default function TextArea({
   const currentValue = isControlled ? value : internalValue;
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newValue = e.target.value;
+    let newValue = e.target.value;
+    
+    // 최대 글자수 제한
+    if (newValue.length > maxLength) {
+      newValue = newValue.slice(0, maxLength);
+    }
+    
+    // 연속 공백 방지
+    if (preventConsecutiveSpaces) {
+      newValue = newValue.replace(/  +/g, ' '); // 연속 공백을 하나로
+    }
+    
+    // 연속 개행문자 방지 (2개 이상의 개행문자를 하나로)
+    if (preventConsecutiveNewlines) {
+      newValue = newValue.replace(/\n\n+/g, '\n'); // 연속 개행문자를 하나로
+    }
+    
+    // 최대 글자수 재확인 (연속 공백/개행 처리 후 길이가 변경될 수 있음)
+    if (newValue.length > maxLength) {
+      newValue = newValue.slice(0, maxLength);
+    }
+    
+    // 값이 변경된 경우에만 이벤트 발생
+    if (newValue !== e.target.value) {
+      e.target.value = newValue;
+    }
+    
     if (!isControlled) {
       setInternalValue(newValue);
     }
@@ -86,6 +116,130 @@ export default function TextArea({
         value={isControlled ? value : undefined}
         defaultValue={isControlled ? undefined : defaultValue}
         onChange={handleChange}
+        onKeyDown={(e) => {
+          const textarea = e.currentTarget;
+          const currentValue = textarea.value;
+          const cursorPos = textarea.selectionStart;
+          const selectionEnd = textarea.selectionEnd;
+          const selectedText = currentValue.substring(cursorPos, selectionEnd);
+          
+          // 최대 글자수 체크: 일반 입력 키인 경우
+          if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+            const textBefore = currentValue.substring(0, cursorPos);
+            const textAfter = currentValue.substring(selectionEnd);
+            const newLength = textBefore.length + textAfter.length + 1; // +1은 입력될 문자
+            if (newLength > maxLength) {
+              e.preventDefault();
+              return;
+            }
+          }
+          
+          // 연속 개행문자 방지: 현재 커서 위치 앞이 개행문자이고 Enter를 누르면 차단
+          if (preventConsecutiveNewlines && e.key === 'Enter') {
+            const textBeforeCursor = currentValue.substring(0, cursorPos);
+            // 커서 바로 앞이 개행문자면 Enter 차단
+            if (textBeforeCursor.endsWith('\n')) {
+              e.preventDefault();
+              return;
+            }
+            // Enter 키 입력 시 최대 글자수 체크
+            if (currentValue.length - selectedText.length >= maxLength) {
+              e.preventDefault();
+              return;
+            }
+          }
+        }}
+        onPaste={(e) => {
+          // 연속 개행문자나 연속 공백 방지가 활성화된 경우 붙여넣기 처리
+          if (preventConsecutiveNewlines || preventConsecutiveSpaces) {
+            e.preventDefault();
+            let pastedText = e.clipboardData.getData('text');
+            const textarea = e.currentTarget;
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            
+            // 붙여넣기 위치 앞뒤 확인
+            const textBefore = textarea.value.substring(0, start);
+            const textAfter = textarea.value.substring(end);
+            
+            // 붙여넣기 위치 앞이 개행문자이고 붙여넣을 텍스트가 개행문자로 시작하면 제거
+            if (preventConsecutiveNewlines && textBefore.endsWith('\n') && pastedText.startsWith('\n')) {
+              pastedText = pastedText.replace(/^\n+/, '');
+            }
+            
+            // 최대 글자수 체크: 붙여넣을 텍스트 길이 조정
+            const availableLength = maxLength - (textBefore.length + textAfter.length);
+            if (availableLength <= 0) {
+              return; // 공간이 없으면 붙여넣기 차단
+            }
+            if (pastedText.length > availableLength) {
+              pastedText = pastedText.slice(0, availableLength);
+            }
+            
+            let newValue = textBefore + pastedText + textAfter;
+            
+            // 연속 공백 방지
+            if (preventConsecutiveSpaces) {
+              newValue = newValue.replace(/  +/g, ' ');
+            }
+            
+            // 연속 개행문자 방지
+            if (preventConsecutiveNewlines) {
+              newValue = newValue.replace(/\n\n+/g, '\n');
+            }
+            
+            // 최대 글자수 재확인
+            if (newValue.length > maxLength) {
+              newValue = newValue.slice(0, maxLength);
+            }
+            
+            if (isControlled) {
+              const syntheticEvent = {
+                target: { value: newValue },
+                currentTarget: textarea,
+              } as React.ChangeEvent<HTMLTextAreaElement>;
+              handleChange(syntheticEvent);
+            } else {
+              setInternalValue(newValue);
+              textarea.value = newValue;
+              const newCursorPos = Math.min(start + pastedText.length, maxLength);
+              textarea.setSelectionRange(newCursorPos, newCursorPos);
+            }
+          } else {
+            // 연속 개행/공백 방지가 없어도 최대 글자수 체크
+            e.preventDefault();
+            let pastedText = e.clipboardData.getData('text');
+            const textarea = e.currentTarget;
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const textBefore = textarea.value.substring(0, start);
+            const textAfter = textarea.value.substring(end);
+            
+            // 최대 글자수 체크
+            const availableLength = maxLength - (textBefore.length + textAfter.length);
+            if (availableLength <= 0) {
+              return;
+            }
+            if (pastedText.length > availableLength) {
+              pastedText = pastedText.slice(0, availableLength);
+            }
+            
+            const newValue = textBefore + pastedText + textAfter;
+            
+            if (isControlled) {
+              const syntheticEvent = {
+                target: { value: newValue },
+                currentTarget: textarea,
+              } as React.ChangeEvent<HTMLTextAreaElement>;
+              handleChange(syntheticEvent);
+            } else {
+              setInternalValue(newValue);
+              textarea.value = newValue;
+              const newCursorPos = Math.min(start + pastedText.length, maxLength);
+              textarea.setSelectionRange(newCursorPos, newCursorPos);
+            }
+          }
+        }}
         onFocus={handleFocus}
         onBlur={handleBlur}
         placeholder={placeholder}

@@ -65,6 +65,8 @@ export default function Home() {
                 rows={4}
                 className=""
                 errorMessage="8자 이상 입력해주세요."
+                preventConsecutiveSpaces={true}
+                preventConsecutiveNewlines={true}
               />
             </div>
 
