@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect } from "react";
 import Button from "../components/common/Button";
+import { useCategoryStore } from "../store/categoryStore";
 
 const categories = [
   "용돈벌기",
@@ -15,24 +16,23 @@ const categories = [
 ];
 
 export default function CategoryPage() {
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([
-    "디지털",
-    "그림",
-  ]);
+  const { tempSelectedCategories, setTempSelectedCategories, resetTempToSelected } = useCategoryStore();
+
+  // 페이지 진입 시 최종 선택 상태로 임시 상태 초기화
+  useEffect(() => {
+    resetTempToSelected();
+  }, [resetTempToSelected]);
 
   const handleCategoryClick = (category: string) => {
-    setSelectedCategories((prev) => {
-      if (prev.includes(category)) {
-        // 이미 선택된 경우 제거
-        return prev.filter((c) => c !== category);
-      } else {
-        // 최대 2개까지 선택 가능
-        if (prev.length < 2) {
-          return [...prev, category];
-        }
-        return prev;
-      }
-    });
+    setTempSelectedCategories(
+      tempSelectedCategories.includes(category)
+        ? // 이미 선택된 경우 제거
+          tempSelectedCategories.filter((c) => c !== category)
+        : // 최대 2개까지 선택 가능
+          tempSelectedCategories.length < 2
+          ? [...tempSelectedCategories, category]
+          : tempSelectedCategories
+    );
   };
 
   return (
@@ -51,7 +51,7 @@ export default function CategoryPage() {
         {/* 카테고리 그리드 */}
         <div className="grid grid-cols-2 gap-3 md:gap-4">
           {categories.map((category, idx) => {
-            const isSelected = selectedCategories.includes(category);
+            const isSelected = tempSelectedCategories.includes(category);
             return (
               <Button
                 key={idx}

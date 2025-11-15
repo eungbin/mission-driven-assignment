@@ -7,9 +7,11 @@ import TimeInput from "./components/common/TimeInput";
 import Button from "./components/common/Button";
 import RepresentativeImageUpload from "./components/image/RepresentativeImageUpload";
 import AdditionalImageUpload from "./components/image/AdditionalImageUpload";
+import { useCategoryStore } from "./store/categoryStore";
 
 export default function Home() {
   const router = useRouter();
+  const { selectedCategories } = useCategoryStore();
 
   // 카테고리 선택 페이지로 이동
   const handleCategoryClick = () => {
@@ -41,7 +43,13 @@ export default function Home() {
                   onClick={handleCategoryClick}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-gray-400 text-left bg-white hover:bg-gray-50 transition-colors cursor-pointer"
                 >
-                  <span className="text-gray-500">주제를 선택해주세요</span>
+                  {selectedCategories.length > 0 ? (
+                    <span className="text-black">
+                      {selectedCategories.join(", ")}
+                    </span>
+                  ) : (
+                    <span className="text-gray-500">주제를 선택해주세요</span>
+                  )}
                 </button>
                 <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none">
                   &gt;

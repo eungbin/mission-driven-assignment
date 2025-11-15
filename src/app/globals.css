@@ -14,7 +14,7 @@ body {
   }
 
   .btn-base:disabled {
-    @apply opacity-50 cursor-not-allowed;
+    @apply cursor-not-allowed;
   }
 
   /* 버튼 크기(패딩 및 폰트 크기) */
@@ -78,7 +78,7 @@ body {
     color: #ffffff;
   }
   .btn-bright-green:hover:not(:disabled) {
-    background-color: #059669;
+    background-color: #02891A;
   }
 
   /* 버튼 컴포넌트 위치 [1,1] */
