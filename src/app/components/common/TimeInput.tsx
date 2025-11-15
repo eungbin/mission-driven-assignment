@@ -200,7 +200,7 @@ export default function TimeInput({
         </Button>
         <div 
           ref={containerRef}
-          className="flex items-center gap-2 px-4 flex-1 justify-center"
+          className="flex items-center gap-2 md:px-4 px-2 flex-1 justify-center"
           onBlur={(e) => {
             // 컨테이너 밖으로 포커스가 이동한 경우에만 handleTimeBlur 호출
             if (!e.currentTarget.contains(e.relatedTarget as Node)) {
