@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "./components/header/Header";
 import MobileBottomButton from "./components/common/MobileBottomButton";
 import Toast from "./components/common/Toast";
+import ConfirmModal from "./components/common/ConfirmModal";
 
 export const metadata: Metadata = {
   title: "Mission Driven Assignment",
@@ -30,6 +31,7 @@ export default function RootLayout({
           {children}
           <MobileBottomButton />
           <Toast />
+          <ConfirmModal />
         </div>
       </body>
     </html>

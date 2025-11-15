@@ -8,15 +8,22 @@ import Button from "../common/Button";
 interface RepresentativeImageUploadProps {
   onFileChange?: (file: File | null) => void;
   maxSize?: number; // bytes, 기본값 15MB
+  value?: { file: File | null; preview: string | null };
+  onChange?: (file: File | null, preview: string | null) => void;
 }
 
 export default function RepresentativeImageUpload({
   onFileChange,
   maxSize = 15 * 1024 * 1024, // 15MB
+  value,
+  onChange,
 }: RepresentativeImageUploadProps) {
-  const [previewImage, setPreviewImage] = useState<string | null>(null);  // 미리보기 이미지
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);  // 에러 메시지
-  const fileInputRef = useRef<HTMLInputElement>(null);                    // 파일 입력 요소 참조 ref
+  const isControlled = value !== undefined;
+  const [internalPreview, setInternalPreview] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  const previewImage = isControlled ? value.preview : internalPreview;
 
   /**
    * 이미지 업로드 영역 클릭 시 호출되는 핸들러 함수
@@ -48,7 +55,10 @@ export default function RepresentativeImageUpload({
     // 미리보기 생성
     try {
       const preview = await readFileAsDataURL(file);
-      setPreviewImage(preview);
+      if (!isControlled) {
+        setInternalPreview(preview);
+      }
+      onChange?.(file, preview);
     } catch {
       setErrorMessage("이미지 미리보기 생성 중 오류가 발생했습니다.");
       e.target.value = "";
@@ -81,7 +91,7 @@ export default function RepresentativeImageUpload({
           </>
         ) : (
           <>
-            <p className="text-black text-center mb-2">
+            <p className="text-center mb-2">
               콘텐츠 대표 이미지를 등록해 주세요!
             </p>
             <p className="text-gray-500 text-sm text-center mb-6">

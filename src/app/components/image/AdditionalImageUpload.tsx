@@ -15,16 +15,23 @@ interface AdditionalImageUploadProps {
   onFilesChange?: (files: File[]) => void;
   maxSize?: number; // bytes, 기본값 15MB
   maxCount?: number; // 기본값 4
+  value?: ImageItem[];
+  onChange?: (images: ImageItem[]) => void;
 }
 
 export default function AdditionalImageUpload({
   onFilesChange,
   maxSize = 15 * 1024 * 1024, // 15MB
   maxCount = 4,
+  value,
+  onChange,
 }: AdditionalImageUploadProps) {
-  const [images, setImages] = useState<ImageItem[]>([]);
+  const isControlled = value !== undefined;
+  const [internalImages, setInternalImages] = useState<ImageItem[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const uploadInputRef = useRef<HTMLInputElement>(null);
+  
+  const images = isControlled ? value : internalImages;
 
 
   /**
@@ -56,24 +63,24 @@ export default function AdditionalImageUpload({
         preview,
       };
 
-      setImages((prev) => {
-        let newImages: ImageItem[];
+      let newImages: ImageItem[];
+      if (targetIndex !== undefined) {
+        // 특정 인덱스에 이미지 교체
+        newImages = [...images];
+        newImages[targetIndex] = newImage;
+      } else {
+        // 새 이미지를 배열 앞에 추가 (뒤로 밀리는 구조)
+        newImages = [newImage, ...images];
+      }
 
-        if (targetIndex !== undefined) {
-          // 특정 인덱스에 이미지 교체
-          newImages = [...prev];
-          newImages[targetIndex] = newImage;
-        } else {
-          // 새 이미지를 배열 앞에 추가 (뒤로 밀리는 구조)
-          newImages = [newImage, ...prev];
-        }
-
-        // 파일 배열 업데이트
-        const files = newImages.map((img) => img.file);
-        onFilesChange?.(files);
-
-        return newImages;
-      });
+      if (!isControlled) {
+        setInternalImages(newImages);
+      }
+      
+      // 파일 배열 업데이트
+      const files = newImages.map((img) => img.file);
+      onFilesChange?.(files);
+      onChange?.(newImages);
     } catch {
       setErrorMessage("이미지 미리보기 생성 중 오류가 발생했습니다.");
     }

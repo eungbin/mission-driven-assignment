@@ -4,15 +4,60 @@ import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import Button from "../common/Button";
 import { useCategoryStore } from "../../store/categoryStore";
+import { useFormStore } from "../../store/formStore";
 
 export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
-  const { tempSelectedCategories, applyTempToSelected, revertTempToSelected } = useCategoryStore();
+  const { tempSelectedCategories, applyTempToSelected, revertTempToSelected, selectedCategories } = useCategoryStore();
+  const {
+    representativeImage,
+    contentTitle,
+    activityType,
+    sessions,
+  } = useFormStore();
 
-  // 메인 페이지에서 다음으로 버튼 활성화 조건 (나중에 확장 가능)
+  // 메인 페이지에서 다음으로 버튼 활성화 조건
   const canProceedFromMain = () => {
-    // TODO: 나중에 조건 추가 예정
+    // 1. 대표 이미지가 있어야 함
+    if (!representativeImage.file && !representativeImage.preview) {
+      return false;
+    }
+
+    // 2. 카테고리가 최소 1개 이상 선택되어 있어야 함
+    if (selectedCategories.length < 1) {
+      return false;
+    }
+
+    // 3. 콘텐츠 제목이 8자 이상 작성되어 있어야 함
+    if (contentTitle.length < 8) {
+      return false;
+    }
+
+    // 4. 활동 방식이 선택되어 있어야 함
+    if (activityType === null) {
+      return false;
+    }
+
+    // 5. 상세 정보 내의 모든 회차 정보가 완료되어 있어야 함
+    for (const session of sessions) {
+      // 날짜가 입력되어 있어야 함
+      if (!session.date || session.date === "") {
+        return false;
+      }
+
+      // 시간들이 모두 입력되어 있어야 함 (기본값이 아닌 실제 입력값인지 확인)
+      // startTime과 endTime이 유효한지 확인
+      if (!session.startTime || !session.endTime) {
+        return false;
+      }
+
+      // 활동 내용이 8자 이상 작성되어 있어야 함
+      if (!session.content || session.content.length < 8) {
+        return false;
+      }
+    }
+
     return true;
   };
 
@@ -43,10 +88,10 @@ export default function Header() {
   const isMainPage = pathname === "/";
 
   return (
-    <header className="sticky top-0 z-50 bg-white">
+    <header className="sticky top-0 z-999 bg-white">
       <div className="max-w-6xl mx-auto px-4 xl:px-0">
         <div className="flex items-center justify-between py-4 relative min-h-[60px]">
-          <h1 className="absolute left-1/2 transform -translate-x-1/2 text-black font-medium text-lg">
+          <h1 className="absolute left-1/2 transform -translate-x-1/2 font-medium text-lg">
             과제
           </h1>
           
