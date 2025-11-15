@@ -65,8 +65,27 @@ export default function Home() {
     updateSession(sessionId, { endTime: newEndTime });
   };
 
-  // 종료 시간 변경 핸들러 (입력 중에는 검증하지 않음)
+  // 종료 시간 변경 핸들러 (입력 중에는 검증하지 않음, 단 period 변경 시에는 검증)
   const handleEndTimeChange = (sessionId: string, newEndTime: { hour: string; minute: string; period: "오전" | "오후" }) => {
+    const session = sessions.find((s) => s.id === sessionId);
+    if (!session) return;
+    
+    // period가 변경된 경우 검증 수행
+    const periodChanged = session.endTime.period !== newEndTime.period;
+    
+    if (periodChanged) {
+      // period 변경 시 검증 수행
+      if (!compareTimes(session.startTime, newEndTime)) {
+        // 토스트 메시지 표시
+        showToast("종료 시간은 시작 시간보다 이를 수 없습니다.");
+        
+        // 종료 시간을 시작 시간 + 1시간으로 자동 수정
+        const correctedEndTime = getEndTimeFromStartTime(session.startTime);
+        updateSession(sessionId, { endTime: correctedEndTime });
+        return;
+      }
+    }
+    
     // 입력 중에는 검증 없이 그냥 업데이트
     updateSession(sessionId, { endTime: newEndTime });
   };
