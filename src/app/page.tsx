@@ -147,8 +147,8 @@ export default function Home() {
                     <span className="text-gray-500">주제를 선택해주세요</span>
                   )}
                 </button>
-                <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none">
-                  &gt;
+                <span className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                  <Image src="/icons/chevron-right.svg" alt="선택" width={20} height={20} />
                 </span>
               </div>
             </div>
