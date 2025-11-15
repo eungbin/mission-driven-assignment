@@ -11,6 +11,8 @@ interface TimeInputProps {
   onHourChange?: (hour: string) => void;
   onMinuteChange?: (minute: string) => void;
   onPeriodChange?: (period: "오전" | "오후") => void;
+  value?: { hour: string; minute: string; period: "오전" | "오후" };
+  onChange?: (time: { hour: string; minute: string; period: "오전" | "오후" }) => void;
 }
 
 export default function TimeInput({
@@ -21,27 +23,45 @@ export default function TimeInput({
   onHourChange,
   onMinuteChange,
   onPeriodChange,
+  value,
+  onChange,
 }: TimeInputProps) {
-  const [currentPeriod, setCurrentPeriod] = useState<"오전" | "오후">(period);
-  const [currentHour, setCurrentHour] = useState(hour);
-  const [currentMinute, setCurrentMinute] = useState(minute);
+  // controlled component인지 확인
+  const isControlled = value !== undefined;
+  
+  const [internalPeriod, setInternalPeriod] = useState<"오전" | "오후">(period);
+  const [internalHour, setInternalHour] = useState(hour);
+  const [internalMinute, setInternalMinute] = useState(minute);
+  
+  const displayPeriod = isControlled ? value.period : internalPeriod;
+  const displayHour = isControlled ? value.hour : internalHour;
+  const displayMinute = isControlled ? value.minute : internalMinute;
 
   const handlePeriodToggle = () => {
-    const newPeriod = currentPeriod === "오전" ? "오후" : "오전";
-    setCurrentPeriod(newPeriod);
+    const newPeriod = displayPeriod === "오전" ? "오후" : "오전";
+    if (!isControlled) {
+      setInternalPeriod(newPeriod);
+    }
     onPeriodChange?.(newPeriod);
+    onChange?.({ hour: displayHour, minute: displayMinute, period: newPeriod });
   };
 
   const handleHourChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newHour = e.target.value;
-    setCurrentHour(newHour);
+    if (!isControlled) {
+      setInternalHour(newHour);
+    }
     onHourChange?.(newHour);
+    onChange?.({ hour: newHour, minute: displayMinute, period: displayPeriod });
   };
 
   const handleMinuteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newMinute = e.target.value;
-    setCurrentMinute(newMinute);
+    if (!isControlled) {
+      setInternalMinute(newMinute);
+    }
     onMinuteChange?.(newMinute);
+    onChange?.({ hour: displayHour, minute: newMinute, period: displayPeriod });
   };
 
   return (
@@ -51,19 +71,19 @@ export default function TimeInput({
       </label>
       <div className="flex items-center border border-gray-300 rounded-lg bg-white overflow-hidden w-full">
         <Button variant="outline-white" size="small" onClick={handlePeriodToggle} className="m-2">
-          {currentPeriod}
+          {displayPeriod}
         </Button>
         <div className="flex items-center gap-2 px-4 flex-1 justify-center">
           <input
             type="text"
-            value={currentHour}
+            value={displayHour}
             onChange={handleHourChange}
             className="w-14 px-2 py-3 bg-transparent text-center text-sm focus:outline-none border-none"
           />
           <span className="text-gray-400 text-lg">:</span>
           <input
             type="text"
-            value={currentMinute}
+            value={displayMinute}
             onChange={handleMinuteChange}
             className="w-14 px-2 py-3 bg-transparent text-center text-sm focus:outline-none border-none"
           />

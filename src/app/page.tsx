@@ -8,10 +8,29 @@ import Button from "./components/common/Button";
 import RepresentativeImageUpload from "./components/image/RepresentativeImageUpload";
 import AdditionalImageUpload from "./components/image/AdditionalImageUpload";
 import { useCategoryStore } from "./store/categoryStore";
+import { useFormStore } from "./store/formStore";
 
 export default function Home() {
   const router = useRouter();
   const { selectedCategories } = useCategoryStore();
+  const {
+    representativeImage,
+    setRepresentativeImage,
+    additionalImages,
+    setAdditionalImages,
+    contentTitle,
+    setContentTitle,
+    activityType,
+    setActivityType,
+    selectedDate,
+    setSelectedDate,
+    startTime,
+    setStartTime,
+    endTime,
+    setEndTime,
+    activityContent,
+    setActivityContent,
+  } = useFormStore();
 
   // 카테고리 선택 페이지로 이동
   const handleCategoryClick = () => {
@@ -25,10 +44,16 @@ export default function Home() {
           {/* 왼쪽 컬럼 - 이미지 업로드 섹션 */}
           <div className="space-y-4 md:space-y-6">
             {/* 대표 이미지 */}
-            <RepresentativeImageUpload />
+            <RepresentativeImageUpload
+              value={representativeImage}
+              onChange={setRepresentativeImage}
+            />
 
             {/* 추가 이미지 (선택) */}
-            <AdditionalImageUpload />
+            <AdditionalImageUpload
+              value={additionalImages}
+              onChange={setAdditionalImages}
+            />
           </div>
 
           {/* 오른쪽 컬럼 - 폼 필드 섹션 */}
@@ -61,6 +86,8 @@ export default function Home() {
             <div>
               <Label>콘텐츠 제목</Label>
               <TextArea
+                value={contentTitle}
+                onChange={(e) => setContentTitle(e.target.value)}
                 placeholder="제목을 입력해주세요"
                 rows={4}
                 className=""
@@ -77,10 +104,20 @@ export default function Home() {
                 만남을 어떤 방식으로 진행하시겠어요?
               </p>
               <div className="flex gap-3">
-                <Button variant="outline-white" size="large" fullWidth>
+                <Button
+                  variant={activityType === "online" ? "outline-green" : "outline-white"}
+                  size="large"
+                  fullWidth
+                  onClick={() => setActivityType("online")}
+                >
                   온라인
                 </Button>
-                <Button variant="outline-white" size="large" fullWidth>
+                <Button
+                  variant={activityType === "offline" ? "outline-green" : "outline-white"}
+                  size="large"
+                  fullWidth
+                  onClick={() => setActivityType("offline")}
+                >
                   직접 만나기
                 </Button>
               </div>
@@ -98,6 +135,8 @@ export default function Home() {
                   <Label variant="sub" className="mb-0 w-20 flex-shrink-0">날짜 선택</Label>
                   <input
                     type="text"
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(e.target.value)}
                     placeholder="날짜를 선택해주세요"
                     className="flex-1 px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400"
                   />
@@ -106,17 +145,15 @@ export default function Home() {
                 {/* 시작 시간 */}
                 <TimeInput
                   label="시작 시간"
-                  hour="10"
-                  minute="00"
-                  period="오전"
+                  value={startTime}
+                  onChange={setStartTime}
                 />
 
                 {/* 종료 시간 */}
                 <TimeInput
                   label="종료 시간"
-                  hour="11"
-                  minute="00"
-                  period="오전"
+                  value={endTime}
+                  onChange={setEndTime}
                 />
               </div>
 
@@ -128,12 +165,15 @@ export default function Home() {
                 </p>
                 <div className="relative">
                   <textarea
+                    value={activityContent}
+                    onChange={(e) => setActivityContent(e.target.value)}
                     placeholder="활동 내용을 간단히 입력해주세요"
                     rows={6}
+                    maxLength={800}
                     className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 resize-none"
                   />
                   <div className="absolute bottom-3 right-3 text-gray-500 text-sm">
-                    0/800자(최소 8자)
+                    {activityContent.length}/800자(최소 8자)
                   </div>
                 </div>
               </div>
